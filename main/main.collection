@@ -210,3 +210,59 @@ embedded_instances {
     z: 1.0
   }
 }
+embedded_instances {
+  id: "spineboy"
+  data: "components {\n"
+  "  id: \"spineboy\"\n"
+  "  component: \"/main/spine/spineboy.script\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"model\"\n"
+  "  type: \"spinemodel\"\n"
+  "  data: \"spine_scene: \\\"/main/spine/spineboy.spinescene\\\"\\n"
+  "default_animation: \\\"idle\\\"\\n"
+  "skin: \\\"\\\"\\n"
+  "blend_mode: BLEND_MODE_ALPHA\\n"
+  "material: \\\"/defold-spine/assets/spine.material\\\"\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    x: 439.0
+    y: 61.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 0.25
+    y: 0.25
+    z: 0.25
+  }
+}
