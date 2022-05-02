@@ -1,0 +1,45 @@
+---========================---
+---== LUA MODULE IMPORTS ==---
+---========================---
+local debugdraw = require "lua-modules.libs-defold.debug-draw.debug-draw"
+local debug = require "main.debug.debug"
+local lume = require "lua-modules.libs-external.lume.lume"
+local rc = require "lua-modules.libs-defold.rendercam.rendercam"
+
+---========================---
+---========================---
+
+function init(self)
+end
+
+
+function update(self, dt)
+
+	if debug.enable_all == 1 then
+
+		if debug.enable_input == 1 then
+
+		local DEBUG_pos_x,DEBUG_pos_y,DEBUG_pos_y_diff = 10,500,15
+		local color = debugdraw.COLORS["yellow"]
+
+		local pos_cursor_rc = vmath.vector3()
+		pos_cursor_rc.x, pos_cursor_rc.y = rc.screen_to_gui_pick(debug.pos_cursor.x, debug.pos_cursor.y)
+
+		debugdraw.text("Pos mouse (screen) = ["..lume.round(debug.pos_mouse_s.x, 0.01).." ; "..lume.round(debug.pos_mouse_s.y, 0.01).."]", DEBUG_pos_x, DEBUG_pos_y, color)
+		DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff
+		debugdraw.text("Pos mouse (world) = ["..lume.round(debug.pos_mouse_w.x, 0.01).." ; "..lume.round(debug.pos_mouse_w.y, 0.01).."]", DEBUG_pos_x, DEBUG_pos_y, color)
+		DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff*2
+		debugdraw.text("Pos cursor = ["..lume.round(debug.pos_cursor.x, 0.01).." ; "..lume.round(debug.pos_cursor.y, 0.01).."]", DEBUG_pos_x, DEBUG_pos_y, color)
+		DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff*2
+		debugdraw.text("Pos cursor (rc) = ["..lume.round(pos_cursor_rc.x, 0.01).." ; "..lume.round(pos_cursor_rc.y, 0.01).."]", DEBUG_pos_x, DEBUG_pos_y, color)
+		DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff*2
+		debugdraw.text("screen width / height : "..debug.width.." / "..debug.height, 10, 900, color)
+		DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff
+		debugdraw.text("window width / height : "..debug.window_width.." / "..debug.window_height, 10, 885, color)
+		DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff
+
+		end -- of "if debug.enable_input == 1"
+
+	end -- of "debug.enable_all == 1"
+
+end

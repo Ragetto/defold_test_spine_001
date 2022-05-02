@@ -1,0 +1,39 @@
+---========================---
+---== LUA MODULE IMPORTS ==---
+---========================---
+local debugdraw = require "extensions.defold.debug-draw.debug-draw"
+local defmath = require "extensions.defold.defmath.defmath"
+local deflist = require "extensions.defold.deftable.list_utils"
+local lume = require "extensions.external.lume.lume"
+local gui_extra = require "extensions.defold.gui_extra.gui_extra"
+local monarch = require "extensions.defold.monarch.monarch"
+local rc = require "extensions.defold.rendercam.rendercam"
+local csv = require "extensions.defold.csv-importer.csv-importer"
+local c = require "gamedata.constants"
+local f = require "functions.functions"
+local fps = require "extensions.defold.metrics.fps"
+local debug = require "debug.debug"
+
+---========================---
+---========================---
+
+go.property("show", true)
+go.property("color", vmath.vector4(0, 0, 1, 1))
+go.property("samples", 60)
+
+
+function init(self)
+	self.instance = fps.create(self.samples, nil, go.get_world_position(), self.color)
+end
+
+function update(self, dt)
+	self.instance.update()
+	if self.show then
+		self.instance.draw()
+	end
+
+	fps.update()
+
+	debug.fps = lume.round(fps.fps(), 1)
+
+end

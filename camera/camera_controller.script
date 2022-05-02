@@ -1,0 +1,206 @@
+---========================---
+---== LUA MODULE IMPORTS ==---
+---========================---
+local debugdraw = require "lua-modules.libs-defold.debug-draw.debug-draw"
+local defmath = require "lua-modules.libs-defold.defmath.defmath"
+local lume = require "lua-modules.libs-external.lume.lume"
+local gui_extra = require "lua-modules.libs-defold.gui_extra.gui_extra"
+local monarch = require "lua-modules.libs-defold.monarch.monarch"
+local rc = require "lua-modules.libs-defold.rendercam.rendercam"
+local cursor = require "lua-modules.libs-defold.defold-input.cursor"
+local csv = require "lua-modules.libs-defold.csv-importer.csv-importer"
+local c = require "lua-modules.gamedata.constants"
+local f = require "lua-modules.libs-self.functions"
+local debug = require "main.debug.debug"
+
+---========================---
+---========================---
+
+
+function init(self)
+
+	msg.post(".", "acquire_input_focus")
+
+	-- initial position of the camera => based on the tilemap position
+	self.render_init = 0
+
+	self.camera_moving = 0
+	self.camera_move_speed_cur = 0
+	self.camera_move_speed_max = 5
+	self.camera_move_accel = 0.1
+	--
+	self.camera_pos_old = vmath.vector3()
+	self.camera_pos_cur = vmath.vector3()
+	self.camera_move_dir = vmath.vector3(0,0,0)
+
+	self.camera_move_speed_cur = 0	
+	self.camera_move_decel = 0.025
+	--
+	self.mouse_pressed = 0 -- 0: released / 1: pressed
+	self.mouse_pos_old = vmath.vector3()
+	self.mouse_pos_cur = vmath.vector3()
+	self.mouse_move_dir = vmath.vector3(0,0,0)
+	self.mouse_move_dir_avg = vmath.vector3(0,0,0)
+	--
+	self.mouse_move_dir_log = {}
+end
+
+
+function update(self, dt)
+
+	----------------------------------------------------------
+	--- CAMERA POSITION INITIALIZATION (when the game starts)
+	--- need to "delay" the positioning because the render script is not ready yet when the camera_controller script is initialized
+	----------------------------------------------------------
+	local tilemap_url = c.TILEMAP_URL
+	local pos_tilemap = go.get_world_position(tilemap_url)
+
+	if self.render_init == 2 then
+		self.render_init = 3
+	end
+
+	if self.render_init == 1 then
+		rc.pan(0, pos_tilemap.y+tilemap_nb_rows*tile_height-debug.window_height/2, c.CAMERA_001)
+		self.render_init = 2
+	end
+
+	if self.render_init == 0 then
+		self.render_init = self.render_init + 1
+	end
+
+
+	---
+	self.mouse_pos_old = self.mouse_pos_cur
+
+	---
+
+	if self.mouse_pressed == 0 then
+		vector_dir = vmath.vector3(0,0,0)
+	end
+
+	if self.mouse_pressed == 1 then
+		local avg_x,avg_y,avg_z = average_table_vector3(self.mouse_move_dir_log)
+		self.camera_move_dir = vmath.vector3(avg_x,avg_y,avg_z)
+		self.camera_move_speed_cur = 1
+
+		local max = tablelength(self.mouse_move_dir_log)
+		if tablelength(self.mouse_move_dir_log) > (c.SCROLLING_MAX_NB_FRAMES-1) then
+			table.remove(self.mouse_move_dir_log,1)
+		end
+		table.insert(self.mouse_move_dir_log, self.mouse_move_dir)
+	end
+
+	if self.mouse_pressed == 2 then
+		-- delete the direction log		
+		-- inertia
+		if self.camera_move_speed_cur > 0 then
+			self.camera_move_speed_cur = self.camera_move_speed_cur - self.camera_move_decel
+		else
+			self.camera_move_speed_cur = 0
+			self.mouse_pressed = 0
+			emptytable(self.mouse_move_dir_log)	
+		end
+	end
+
+
+
+	----------------------------------------------------------
+	--- CAMERA MOVEMENT
+	--- based on mouse input
+	----------------------------------------------------------	
+
+	-- calculation of min-max camera position (Y)
+	local pos_camera_Y_min = pos_tilemap.y + debug.window_height/2
+	local pos_camera_Y_max = pos_tilemap.y + tilemap_nb_rows*tile_height-debug.window_height/2
+
+	local pos_camera = go.get_world_position(c.CAMERA_001)
+
+	-- camera movement
+	rc.pan(-self.camera_move_dir.x * self.camera_move_speed_cur * c.SCROLLING_SENSIVITY*c.SCROLLING_X, -self.camera_move_dir.y * self.camera_move_speed_cur * c.SCROLLING_SENSIVITY*c.SCROLLING_Y, c.CAMERA_001)
+	if pos_camera.y > pos_camera_Y_max then
+		--rc.pan(0, -1, c.CAMERA_001)
+		pos_camera.y = pos_camera_Y_max
+		self.camera_move_speed_cur = 0
+		go.set_position(pos_camera,c.CAMERA_001)
+	elseif pos_camera.y < pos_camera_Y_min then
+		--rc.pan(0, 1, c.CAMERA_001)
+		pos_camera.y = pos_camera_Y_min
+		self.camera_move_speed_cur = 0
+		go.set_position(pos_camera,c.CAMERA_001)
+	end
+
+
+
+	---==============================---
+	---------- TEST OF CAMERA ----------
+	---==============================---
+	local pos = go.get_world_position(c.CAMERA_001)
+
+	--debugdraw.text("camera pos (world): "..pos,10,750,color)
+
+	---==============================---
+	------ TEST OF MOUSE MOVEMENTS -----
+	---==============================---
+	--[[
+	debugdraw.text("self.mouse_pos_old: "..self.mouse_pos_old,10,600,color)
+	debugdraw.text("self.mouse_pos_cur: "..self.mouse_pos_cur,10,585,color)
+	debugdraw.text("self.mouse_move_dir: "..self.mouse_move_dir,10,565,color)	
+	debugdraw.text("self.camera_move_speed_cur: "..self.camera_move_speed_cur,10,550,color)	
+	debugdraw.text("c.SCROLLING_MAX_NB_FRAMES: "..c.SCROLLING_MAX_NB_FRAMES,10,520,color)
+
+	local avg_x,avg_y,avg_z = average_table_vector3(self.mouse_move_dir_log)
+	debugdraw.text("avg_dir x y z: ["..avg_x..", "..avg_y..", "..avg_z.."]",10,505,color)
+
+	local max = tablelength(self.mouse_move_dir_log)
+	local debug_pos_y = 450
+	local debug_pos_y_minus = 15	
+	for i=1,max do	msg.post("cursor#cursor", "input", { action_id = self.action_id, action = self.action })
+	debugdraw.text("self.mouse_move_dir["..i.."]"..self.mouse_move_dir_log[i],10,debug_pos_y,color)	
+	debug_pos_y = debug_pos_y - debug_pos_y_minus
+	debugdraw.text("self.mouse_move_dir["..i.."].x: "..self.mouse_move_dir_log[i].x,10,debug_pos_y,color)
+	debug_pos_y = debug_pos_y - debug_pos_y_minus -5
+end	
+]]--
+
+---==============================---
+---------- TEST OF INPUTS ----------
+---==============================---
+--if self.action_id ~= nil and self.action ~= nil then
+--debugdraw.text(self.action_id,10,600,color)
+--debugdraw.text(self.action,10,585,color)
+--end
+
+end
+
+
+function on_message(self, message_id, message, sender)
+end
+
+
+function on_input(self, action_id, action)
+
+	self.mouse_pos_cur = vmath.vector3(action.x, action.y, 0)
+	self.mouse_move_dir = self.mouse_pos_cur - self.mouse_pos_old
+
+	-- JC 01/10/2021 20:18 # Fixed by Britzl (camera/scrolling desynchronization)
+	-- https://forum.defold.com/t/rendercam-defold-input-weird-cursor-position-when-scrolling/69387/4
+	-- we convert the screen mouse position into an "object" position in the world
+	-- missing: "real-time following even when the mouse doesn't move" + "cursor teleporting to mouse position when clicking"
+	local mouse_pos_cur_WORLD = rc.screen_to_world_2d(self.mouse_pos_cur.x, self.mouse_pos_cur.y)
+	action.x = mouse_pos_cur_WORLD.x
+	action.y = mouse_pos_cur_WORLD.y
+	self.action_id = action_id
+	self.action = action
+	msg.post("cursor#cursor", "input", { action_id = action_id, action = action })
+
+	if action.pressed and action_id == hash("touch") then
+		self.mouse_pressed = 1
+	elseif action.released then
+		self.camera_moving = 0
+		self.mouse_pressed = 2
+	end
+end
+
+
+function on_reload(self)
+end

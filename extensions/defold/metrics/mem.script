@@ -1,0 +1,15 @@
+go.property("show", true)
+go.property("color", vmath.vector4(0, 0, 1, 1))
+
+local mem = require "metrics.mem"
+
+function init(self)
+	self.instance = mem.create(nil, go.get_world_position(), self.color)
+end
+
+function update(self, dt)
+	self.instance.update()
+	if self.show then
+		self.instance.draw()
+	end
+end

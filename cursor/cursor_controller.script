@@ -1,0 +1,80 @@
+---========================---
+---== LUA MODULE IMPORTS ==---
+---========================---
+local debugdraw = require "extensions.defold.debug-draw.debug-draw"
+local defmath = require "extensions.defold.defmath.defmath"
+local lume = require "extensions.external.lume.lume"
+local gui_extra = require "extensions.defold.gui_extra.gui_extra"
+local monarch = require "extensions.defold.monarch.monarch"
+local rc = require "extensions.defold.rendercam.rendercam"
+local cursor = require "extensions.defold.defold-input.cursor"
+local f = require "functions.functions"
+local debug = require "debug.debug"
+
+---========================---
+---========================---
+
+
+function init(self)
+	if not go.get("#cursor", "acquire_input_focus") then
+		self.forward_input = true
+		msg.post(".", "acquire_input_focus")
+
+
+		--label.set_text("cursor_info#events", "Cursor out")
+		--label.set_text("cursor_info#events", "Cursor out")
+
+	end
+
+	cursor.listen(msg.url("#cursor"), cursor.DRAG_START, function(message_id, message)
+		print("drag")
+		-- prevent dragging of blue aliens
+		if message.group == hash("blue") then
+			print("prevent")
+			return true
+		end
+	end)
+end
+
+function update(self, dt)
+
+	debug.pos_cursor = go.get_position()
+
+end
+
+function on_input(self, action_id, action)
+	if self.forward_input then
+		msg.post("#cursor", "input", { action_id = action_id, action = action })
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == cursor.OVER then
+		--print("Cursor over", message.id, message.group, message.x, message.y)
+		label.set_text("cursor_info#events", "Cursor over")
+	elseif message_id == cursor.OUT then
+		--print("Cursor out", message.id, message.group, message.x, message.y)
+		label.set_text("cursor_info#events", "Cursor out")
+	elseif message_id == cursor.PRESSED then
+		--print("Pressed", message.id, message.group, message.x, message.y)
+		label.set_text("cursor_info#events", "Pressed")
+	elseif message_id == cursor.RELEASED then
+		--print("Released", message.id, message.group, message.x, message.y)
+		label.set_text("cursor_info#events", "Released")
+	elseif message_id == cursor.CLICKED then
+		--print("Clicked", message.id, message.group, message.x, message.y)
+		label.set_text("cursor_info#events", "Clicked")
+		if message.group == hash("blue") then
+			go.delete(message.id)
+		end
+	elseif message_id == cursor.DRAG_START then
+		--print("Drag started", message.id, message.group, message.x, message.y)
+		label.set_text("cursor_info#events", "Drag started")
+	elseif message_id == cursor.DRAG_END then
+		--print("Drag ended", message.id, message.group, message.x, message.y)
+		label.set_text("cursor_info#events", "Drag ended")
+	elseif message_id == cursor.DRAG then
+		--print("Drag", message.id, message.group, message.x, message.y, message.dx, message.dy)
+		label.set_text("cursor_info#events", "Drag")
+	end
+end
