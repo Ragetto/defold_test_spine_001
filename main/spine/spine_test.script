@@ -100,6 +100,8 @@ function update(self, dt)
 	
 end
 
+
+
 function on_input(self, action_id, action)
 
 	if action.pressed then
@@ -164,4 +166,15 @@ function on_input(self, action_id, action)
 
 	end
 
+end
+
+
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("spine_event") then
+		-- Receiving animation event from Spine. Play footsteps.
+		if message.event_id == hash("test") then
+			print("event test!!")
+		end
+	end
 end
