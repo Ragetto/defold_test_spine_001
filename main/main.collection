@@ -211,10 +211,10 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "spineboy"
+  id: "spine_test"
   data: "components {\n"
-  "  id: \"spineboy\"\n"
-  "  component: \"/main/spine/spineboy.script\"\n"
+  "  id: \"spine_test\"\n"
+  "  component: \"/main/spine/spine_test.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -230,7 +230,7 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"model\"\n"
   "  type: \"spinemodel\"\n"
-  "  data: \"spine_scene: \\\"/main/spine/spineboy.spinescene\\\"\\n"
+  "  data: \"spine_scene: \\\"/main/spine/test_ork_001/test_ork_001.spinescene\\\"\\n"
   "default_animation: \\\"idle\\\"\\n"
   "skin: \\\"\\\"\\n"
   "blend_mode: BLEND_MODE_ALPHA\\n"
@@ -250,8 +250,8 @@ embedded_instances {
   "}\n"
   ""
   position {
-    x: 439.0
-    y: 61.0
+    x: 167.0
+    y: 63.0
     z: 0.0
   }
   rotation {
@@ -261,8 +261,8 @@ embedded_instances {
     w: 1.0
   }
   scale3 {
-    x: 0.25
-    y: 0.25
-    z: 0.25
+    x: 0.1
+    y: 0.1
+    z: 0.1
   }
 }
