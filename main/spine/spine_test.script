@@ -134,7 +134,7 @@ function on_input(self, action_id, action)
 		if action_id == hash("touch_left") then
 			print("Mallet!")
 			--spine.set_attachment("/spine_test#model/root/body/body2/body3/arm_left/arm_left2/arm_left3/weapon", "1_ORK_mallet")
-			spine.set_attachment("weapon", "1_ORK_mallet")
+			spine.set_attachment("/spine_test#model", "weapon", "1_ORK_mallet")
 			--spine.set_attachment(weapon, "1_ORK_mallet")
 			--local hand = spine.get_go("spine_test#model", "arm_left3")
 			--msg.post("weapon", "set_parent", { parent_id = hand })
@@ -142,7 +142,7 @@ function on_input(self, action_id, action)
 
 		if action_id == hash("touch_right") then
 			print("Sword!")
-			spine.set_attachment("weapon", "2_ORK_sword")
+			spine.set_attachment("/spine_test#model", "weapon", "2_ORK_sword")
 			--spine.set_attachment(weapon, "2_ORK_sword")--
 			--local hand = spine.get_go("spine_test#model", "arm_left3")
 			--msg.post("weapon", "set_parent", { parent_id = hand })
