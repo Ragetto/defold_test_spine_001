@@ -1,0 +1,66 @@
+---========================---
+---== LUA MODULE IMPORTS ==---
+---========================---
+local debugdraw = require "extensions.defold.debug-draw.debug-draw"
+local defmath = require "extensions.defold.defmath.defmath"
+local lume = require "extensions.external.lume.lume"
+local gui_extra = require "extensions.defold.gui_extra.gui_extra"
+local monarch = require "extensions.defold.monarch.monarch"
+local rc = require "extensions.defold.rendercam.rendercam"
+local csv = require "extensions.defold.csv-importer.csv-importer"
+local gp = require "gamedata.runtime_gameplay"
+local c = require "gamedata.constants"
+
+---========================---
+---========================---
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+end
+
+
+function update(self, dt)
+
+	
+end
+
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch_left") and action.pressed then -- <2>
+		local button = gui.get_node("btn_head") -- <3>
+		if gui.pick_node(button, action.x, action.y) then -- <5>
+			gp.head_id_cur = gp.head_id_cur + 1
+			if gp.head_id_cur > c.nb_heads then
+				gp.head_id_cur = 1
+			end
+			gp.item_type_cur = "head"
+			gp.item_slot_type_cur = gp.item_type_cur
+			gp.item_id_cur = gp.head_id_cur
+			gp.switch_item = 1
+		end
+
+		local button = gui.get_node("btn_wrist") -- <3>
+		if gui.pick_node(button, action.x, action.y) then -- <5>
+			gp.wrist_id_cur = gp.wrist_id_cur + 1
+			if gp.wrist_id_cur > c.nb_wrists then
+				gp.wrist_id_cur = 1
+			end
+			gp.item_type_cur = "arm_right"
+			gp.item_slot_type_cur = "right arm" -- putain les fdps qui ont nommé leurs assets comme des baltringues
+			gp.item_id_cur = gp.wrist_id_cur
+			gp.switch_item = 1
+		end
+
+		local button = gui.get_node("btn_weapon") -- <3>
+		if gui.pick_node(button, action.x, action.y) then -- <5>
+			gp.weapon_id_cur = gp.weapon_id_cur + 1
+			if gp.weapon_id_cur > c.nb_weapons then
+				gp.weapon_id_cur = 1
+			end
+			gp.item_type_cur = "weapon"
+			gp.item_slot_type_cur = gp.item_type_cur
+			gp.item_id_cur = gp.weapon_id_cur
+			gp.switch_item = 1
+		end
+	end
+end

@@ -15,7 +15,7 @@ images {
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
-  image: "/assets/test_ork_001/images/1_ORK_mallet.png"
+  image: "/assets/test_ork_001/images/1_ORK_weapon.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
@@ -27,7 +27,23 @@ images {
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
-  image: "/assets/test_ork_001/images/2_ORK_sword.png"
+  image: "/assets/test_ork_001/images/2_ORK_weapon.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/test_ork_001/images/2_ORK_head.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/test_ork_001/images/2_ORK_right arm.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/test_ork_001/images/3_ORK_head.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/test_ork_001/images/3_ORK_weapon.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 margin: 0
