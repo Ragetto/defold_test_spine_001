@@ -38,9 +38,13 @@ function init(self)
 	-- animation
 	self.url = "/spine_test#model"
 	self.anim_cur = ""
-	self.switch_anim = 0
+	self.switch_anim = 1
 	self.anim_move_name = "walk" -- run for the spineboy, walk for the test_ork_001 ("idle" remains "idle" in both cases)
 
+	self.anim_speed_idle = 2
+	self.anim_speed_walk = 1.5
+	self.anim_blend_duration = 0.15
+	
 	-- spine_custo
 	local nb_slots = #gp.slots
 	for i=1,nb_slots do
@@ -77,12 +81,13 @@ function update(self, dt)
 			self.anim_cur = self.anim_move_name
 		end
 
-		local blend_duration_value, playback_rate_value = 0,1.1
+		local blend_duration_value, playback_rate_value = 0, self.anim_speed_idle
 		if self.anim_cur == "idle" then
-			blend_duration_value = 0.15
+			blend_duration_value = self.anim_blend_time
 		else
-			playback_rate_value = 1
+			playback_rate_value = self.anim_speed_walk
 		end
+		
 		local properties = { blend_duration = blend_duration_value, playback_rate = playback_rate_value }
 		spine.play_anim(self.url, self.anim_cur, go.PLAYBACK_LOOP_FORWARD, properties)
 
