@@ -76,7 +76,7 @@ function update(self, dt)
 		if self.anim_cur == "idle" then
 			blend_duration_value = 0.15
 		else
-			playback_rate_value = 2.5
+			playback_rate_value = 1
 		end
 		local properties = { blend_duration = blend_duration_value, playback_rate = playback_rate_value }
 		spine.play_anim(self.url, self.anim_cur, go.PLAYBACK_LOOP_FORWARD, properties)
