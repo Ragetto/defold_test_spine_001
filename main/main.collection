@@ -81,7 +81,7 @@ embedded_instances {
   "  id: \"background\"\n"
   "  type: \"sprite\"\n"
   "  data: \"tile_set: \\\"/main/main.atlas\\\"\\n"
-  "default_animation: \\\"104598-space-pixel_art-horizon-stars\\\"\\n"
+  "default_animation: \\\"20220507_montage_with_char_001\\\"\\n"
   "material: \\\"/builtins/materials/sprite.material\\\"\\n"
   "blend_mode: BLEND_MODE_ALPHA\\n"
   "\"\n"
@@ -99,8 +99,8 @@ embedded_instances {
   "}\n"
   ""
   position {
-    x: 480.0
-    y: 320.0
+    x: -3.0
+    y: 562.0
     z: 0.0
   }
   rotation {
@@ -110,9 +110,9 @@ embedded_instances {
     w: 1.0
   }
   scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
+    x: 1.5
+    y: 1.5
+    z: 1.5
   }
 }
 embedded_instances {
