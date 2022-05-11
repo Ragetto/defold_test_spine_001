@@ -36,11 +36,16 @@ function init(self)
 	self.speed = 5
 
 	-- animation
-	self.url = "#model"
+	self.url = "/spine_test#model"
 	self.anim_cur = ""
 	self.switch_anim = 0
 	self.anim_move_name = "walk" -- run for the spineboy, walk for the test_ork_001 ("idle" remains "idle" in both cases)
-	
+
+	-- spine_custo
+	local nb_slots = #gp.slots
+	for i=1,nb_slots do
+		spine.set_attachment(self.url, gp.slots[i].name, gp.slots[i].image.."_"..gp.slots[i].id_min)
+	end
 
 end
 
@@ -93,17 +98,44 @@ function update(self, dt)
 
 
 	--====================--
-	------ CHANGE CUSTO ITEMS
+	------ CUSTOMIZATION
 	--====================--
 
-	if gp.switch_item == 1 then
+	local nb_slots_updated = #gp.slots_updated
+	
+	if nb_slots_updated > 0 then
 
-		spine.set_attachment("/spine_test#model", gp.item_type_cur, gp.item_id_cur.."_ORK_"..gp.item_slot_type_cur)
+		for i=1,#gp.slots_updated do
+			--print("slot index => "..gp.slots_updated[i].index)
+		end
 		
-		gp.switch_item = 0
+		----[[--
+		for i=1,nb_slots_updated do
+			local slot_index = gp.slots_updated[i].index
+			local nb_slots = #gp.slots
+			for j=1,nb_slots do
+				if j == slot_index then
+					--print("pouet pouet > slot "..j)
+					gp.slots[j].id_cur = gp.slots[j].id_cur + 1
+					if gp.slots[j].id_cur > gp.slots[j].id_max then
+						gp.slots[j].id_cur = gp.slots[j].id_min
+					end
+					local id_cur = gp.slots[j].id_cur
+					local name = gp.slots[j].name
+					local image_tag = gp.slots[j].image
+					spine.set_attachment(self.url, name, image_tag.."_"..id_cur)
+				end
+			end
+		end
+
+		
+		--print("updated ! pouet pouet")
+		--]]--
+		emptytable(gp.slots_updated)
 
 	end
-	
+
+
 	--====================--
 	------ DEBUG
 	--====================--
@@ -113,11 +145,11 @@ function update(self, dt)
 	DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff
 	debugdraw.text("self.switch_anim = "..self.switch_anim, DEBUG_pos_x, DEBUG_pos_y, color)
 	DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff*2
-	debugdraw.text("current head = "..gp.head_id_cur, DEBUG_pos_x, DEBUG_pos_y, color)
+	--debugdraw.text("current head = "..gp.head_id_cur, DEBUG_pos_x, DEBUG_pos_y, color)
 	DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff
-	debugdraw.text("current wrist = "..gp.wrist_id_cur, DEBUG_pos_x, DEBUG_pos_y, color)
+	--debugdraw.text("current wrist = "..gp.wrist_id_cur, DEBUG_pos_x, DEBUG_pos_y, color)
 	DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff
-	debugdraw.text("current weapon = "..gp.weapon_id_cur, DEBUG_pos_x, DEBUG_pos_y, color)
+	--debugdraw.text("current weapon = "..gp.weapon_id_cur, DEBUG_pos_x, DEBUG_pos_y, color)
 	DEBUG_pos_y = DEBUG_pos_y - DEBUG_pos_y_diff
 	
 end
